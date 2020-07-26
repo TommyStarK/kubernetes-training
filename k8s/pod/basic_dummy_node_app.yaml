@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dummy-node-app-manual
+spec:
+  containers:
+  - image: tommystark/dummy-node-app
+    name: dummy-node-app
+    ports:
+    - containerPort: 8080
+      protocol: TCP
