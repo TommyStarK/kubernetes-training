@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: daemon-set-dummy-node-app
+spec:
+  selector:
+    matchLabels:
+      app: dummy
+  template:
+    metadata:
+      labels:
+        app: dummy
+    spec:
+      nodeSelector:
+        random: "true"
+      containers:
+        - name: dummy-node-app
+          image: tommystark/dummy-node-app
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+    

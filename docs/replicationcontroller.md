@@ -1,15 +1,6 @@
 # kubernetes-training
 
-## `Replicationcontroller`
-
-A ReplicationController has three essential parts:
-
-- label selector, which determines what pods are in the ReplicationController’s scope
-
-- replica count, which specifies the desired number of pods that should be running
-
-- pod template, which is used when creating new pod replicas
-
+## `ReplicationController`
 
 ReplicationController enables the following powerful features:
 
@@ -19,9 +10,17 @@ ReplicationController enables the following powerful features:
 
 - It enables easy horizontal scaling of pods—both manual and automatic.
 
-:warning: A pod instance is never relocated to another node. Instead, the ReplicationController creates a completely new pod instance that has no rela- tion to the instance it’s replacing.
+A ReplicationController has three essential parts:
 
-## example
+- label selector, which determines what pods are in the ReplicationController’s scope
+
+- replica count, which specifies the desired number of pods that should be running
+
+- pod template, which is used when creating new pod replicas
+
+**NOTE:** A pod instance is never relocated to another node. Instead, the ReplicationController creates a completely new pod instance that has no relation to the instance it’s replacing.
+
+### demo
 
 - Create a ReplicationController for the dummy node app
 

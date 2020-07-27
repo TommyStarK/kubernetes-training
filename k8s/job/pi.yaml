@@ -1,0 +1,21 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: pi-with-timeout
+spec:
+  # specify the number of retries before considering a Job as failed
+  backoffLimit: 2
+  # A way to terminate a Job is by setting an active deadline
+  activeDeadlineSeconds: 30
+  # Another way to clean up finished Jobs (either Complete or Failed) automatically is to use a TTL mechanism provided by a TTL controller 
+  # for finished resources, by specifying the .spec.ttlSecondsAfterFinished field of the Job.
+  # When the TTL controller cleans up the Job, it will delete the Job cascadingly, i.e. delete its dependent objects, such as Pods, 
+  # together with the Job. Note that when the Job is deleted, its lifecycle guarantees, such as finalizers, will be honored.
+  ttlSecondsAfterFinished: 30
+  template:
+    spec:
+      containers:
+      - name: pi
+        image: perl
+        command: ["perl",  "-Mbignum=bpi", "-wle", "print bpi(2000)"]
+      restartPolicy: Never

@@ -16,7 +16,7 @@ property must not be specified.
 
 If you specify multiple expressions, all those expressions must evaluate to true for the selector to match a pod. If you specify both matchLabels and matchExpressions, all the labels must match and all the expressions must evaluate to true for the pod to match the selector.
 
-## example
+### demo
 
 - Create a ReplicaSet for the dummy-node-app
 
@@ -58,7 +58,7 @@ Now let's update another pod's label to set it to `foo`:
 ❯ kubectl label pods replica-set-dummy-node-app-n8bv7 app=foo --overwrite
 ```
 
-and then check one last time our pods to see that a new pod has been created to satisfy the desired stated defined by this ReplicaSet.
+and then check one last time our pods to see that a new pod has been created to satisfy the desired state defined by this ReplicaSet.
 
 ```bash
 ❯ kubectl get pods --show-labels

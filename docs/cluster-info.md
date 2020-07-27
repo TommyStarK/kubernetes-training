@@ -47,7 +47,7 @@ kube-system            Active   94d
 kubernetes-dashboard   Active   94d
 ```
 
-- Display CPU/memory comsumption of a GKE cluster
+- Display CPU/memory comsumption of a `GKE` cluster
 
 ```bash
 ❯ kubectl top node

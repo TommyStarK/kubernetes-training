@@ -2,10 +2,30 @@
 
 ## `Pod`
 
+Pods are the smallest deployable units of computing that you can create and manage in Kubernetes.
+
+A Pod is a group of one or more containers, with shared storage/network resources, and a specification for how to run the containers. It allows you to run closely related processes together and provide them with (almost) the same environment as if they were all running in a single container, while keeping them somewhat isolated.
+
+A Pod's contents are always co-located and co-scheduled, and run in a shared context. The shared context of a Pod is a set of Linux namespaces, cgroups, and potentially other facets of isolation.
+
+Kubernetes achieves this by configuring Docker to have all containers of a pod share the same set of Linux namespaces instead of each container having its own set.
+
+Because all containers of a pod run under the same Network and UTS namespaces (we’re talking about Linux namespaces here), they all share the same hostname and network interfaces. 
+Similarly, all containers of a pod run under the same IPC namespace and can communicate through IPC.
+
+> In terms of Docker concepts, a Pod is similar to a group of Docker containers with shared namespaces and shared filesystem volumes.
+
+*THE FLAT INTER-POD NETWORK*
+
+All pods in a Kubernetes cluster reside in a single flat, shared, network-address space, which means every pod can access every other pod at the other pod’s IP address. No NAT (Network Address Translation) gateways exist between them. When two pods send network packets between each other, they’ll each see the actual IP address of the other as the source IP in the packet.
+
+
+### demo
+
 - Create a pod from a yaml file
 
 ```bash
-❯ kubectl create -f k8s/pod/dummy_node_app.yaml
+❯ kubectl apply -f k8s/pod/dummy_node_app.yaml
 ```
 
 and communicate with it
@@ -25,7 +45,7 @@ and communicate with it
 - Create and manage a pod with labels
 
 ```bash
-❯ kubectl create -f k8s/pod/dummy_node_app_with_labels.yaml
+❯ kubectl apply -f k8s/pod/dummy_node_app_with_labels.yaml
 
 # show pods with labels
 ❯ kubectl get pods --show-labels
@@ -36,7 +56,7 @@ dummy-node-app-with-labels   1/1     Running   0          2m8s    creation_metho
 # add manual label to the first pod
 ❯ kubectl label pods dummy-node-app-manual creation_method=manual
 
-# overwrite existing labels
+# overwrite existing label
 ❯ kubectl label pods dummy-node-app-with-labels env=debug --overwrite
 
 # specify a specifc list of labels
@@ -50,7 +70,7 @@ dummy-node-app-with-labels   1/1     Running   0          7m40s   manual        
 NAME                         READY   STATUS    RESTARTS   AGE
 dummy-node-app-with-labels   1/1     Running   0          8m32s
 
-# list all pods that does include a label
+# list all pods that does not include a label
 ❯ kubectl get pods -l '!env'
 NAME                    READY   STATUS    RESTARTS   AGE
 dummy-node-app-manual   1/1     Running   0          16m
@@ -74,13 +94,12 @@ NAME                                          STATUS   ROLES    AGE    VERSION
 gke-k8s-training-default-pool-3088a1f5-1fz4   Ready    <none>   4h3m   v1.15.12-gke.2
 
 # deploy a pod with node selector
-❯ kubectl create -f k8s/pod/dummy_node_app_with_node_selector.yaml
-pod/dummy-node-app-node-selector created
+❯ kubectl apply -f k8s/pod/dummy_node_app_with_node_selector.yaml
 
-# show `dummy-node-app-node-selector` pod's label and on which node it's running
-❯ kubectl get pods dummy-node-app-node-selector -o wide --show-labels
-NAME                           READY   STATUS    RESTARTS   AGE     IP          NODE                                          NOMINATED NODE   READINESS GATES   LABELS
-dummy-node-app-node-selector   1/1     Running   0          7m24s   10.4.1.15   gke-k8s-training-default-pool-3088a1f5-1fz4   <none>           <none>            <none>
+# show on which node the pod is running
+❯ kubectl get pods dummy-node-app-node-selector -o wide
+NAME                           READY   STATUS    RESTARTS   AGE     IP          NODE                                          NOMINATED NODE   READINESS GATES
+dummy-node-app-node-selector   1/1     Running   0          7m24s   10.4.1.15   gke-k8s-training-default-pool-3088a1f5-1fz4   <none>           <none>
 ```
 
 - Annotate pod

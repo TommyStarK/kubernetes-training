@@ -8,3 +8,5 @@
 - [ReplicationController](https://github.com/TommyStarK/kubernetes-training/blob/master/docs/replicationcontroller.md)
 - [ReplicaSet](https://github.com/TommyStarK/kubernetes-training/blob/master/docs/replicaset.md)
 - [DaemonSet](https://github.com/TommyStarK/kubernetes-training/blob/master/docs/daemonset.md)
+- [Job](https://github.com/TommyStarK/kubernetes-training/blob/master/docs/job.md)
+- [CronJob](https://github.com/TommyStarK/kubernetes-training/blob/master/docs/cronjob.md)
