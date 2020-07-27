@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: replica-set-dummy-node-app
+spec:
+  replicas: 3
+  selector:
+    matchExpressions:
+      - key: app
+        operator: In
+        values:
+          - dummy
+          - rs-dummy
+  template:
+    metadata:
+      labels:
+        app: dummy
+    spec:
+      containers:
+        - name: dummy-node-app
+          image: tommystark/dummy-node-app
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+
+

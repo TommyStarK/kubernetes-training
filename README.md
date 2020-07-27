@@ -6,4 +6,5 @@
 - [Namespace](https://github.com/TommyStarK/kubernetes-training/blob/master/docs/namespace.md)
 - [Probes](https://github.com/TommyStarK/kubernetes-training/blob/master/docs/probes.md)
 - [ReplicationController](https://github.com/TommyStarK/kubernetes-training/blob/master/docs/replicationcontroller.md)
-- [ReplicaSet](https://github.com/TommyStarK/kubernetes-training/blob/master/docs/replicationset.md)
+- [ReplicaSet](https://github.com/TommyStarK/kubernetes-training/blob/master/docs/replicaset.md)
+- [DaemonSet](https://github.com/TommyStarK/kubernetes-training/blob/master/docs/daemonset.md)

@@ -22,10 +22,10 @@ Kubernetes can probe a container using one of the three mechanisms:
 Start a pod with a HTTP Get liveness probe:
 
 ```bash
-❯ kubectl apply -f k8s/liveness-probe/dummy_node_app.yaml
+❯ kubectl apply -f k8s/probes/dummy_node_app.yaml
 
 # you might see the following error
-error: error validating "k8s/liveness-probe/dummy_node_app_with_probes.yaml": error validating data: ValidationError(Pod.spec.containers[0]): unknown field "startupProbe" in io.k8s.api.core.v1.Container; if you choose to ignore these errors, turn validation off with --validate=false
+error: error validating "k8s/probes/dummy_node_app.yaml": error validating data: ValidationError(Pod.spec.containers[0]): unknown field "startupProbe" in io.k8s.api.core.v1.Container; if you choose to ignore these errors, turn validation off with --validate=false
 # on my GKE 1.15.12 startupProbe was not enabled
 # https://v1-15.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.15/#container-v1-core
 # You can add the --validate=false to start the pod and omit the startupProbe

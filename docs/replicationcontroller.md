@@ -21,6 +21,7 @@ ReplicationController enables the following powerful features:
 
 :warning: A pod instance is never relocated to another node. Instead, the ReplicationController creates a completely new pod instance that has no rela- tion to the instance it’s replacing.
 
+## example
 
 - Create a ReplicationController for the dummy node app
 
