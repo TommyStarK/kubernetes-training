@@ -10,3 +10,6 @@
 - [DaemonSet](https://github.com/TommyStarK/kubernetes-training/blob/master/docs/daemonset.md)
 - [Job](https://github.com/TommyStarK/kubernetes-training/blob/master/docs/job.md)
 - [CronJob](https://github.com/TommyStarK/kubernetes-training/blob/master/docs/cronjob.md)
+- [Service](https://github.com/TommyStarK/kubernetes-training/blob/master/docs/service.md)
+- [Ingress](https://github.com/TommyStarK/kubernetes-training/blob/master/docs/ingress.md)
+- [Using a headless service for discovering individual pods](https://github.com/TommyStarK/kubernetes-training/blob/master/docs/headless-service.md)

@@ -1,0 +1,13 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-minikube-dummy-node-app
+spec:
+  rules:
+    - host: app.dummy.com
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: nodeport-dummy-node-app
+              servicePort: 80
