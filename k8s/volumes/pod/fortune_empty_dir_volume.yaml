@@ -12,7 +12,7 @@ spec:
       - name: html
         mountPath: /var/htdocs
   - image: nginx:alpine
-    name: nginx
+    name: web-server
     volumeMounts:
       - name: html
         mountPath: /usr/share/nginx/html

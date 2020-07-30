@@ -23,7 +23,7 @@ gke-k8s-training-default-pool-3088a1f5-rd72   Ready    <none>   28h   v1.15.12-g
 
 > If not, just add the `random=true` label to one of your nodes.
 
-- Create the Daemonset
+#### 1. **Create the Daemonset**
 
 ```bash
 ❯ kubectl apply -f k8s/daemonset/dummy_node_app.yaml
@@ -77,7 +77,7 @@ Events:
   Normal  SuccessfulCreate  5m43s  daemonset-controller  Created pod: daemon-set-dummy-node-app-w5dlk
 ```
 
-- Remove Node's label when there is a pod already running and managed by a DaemonSet
+#### 2. **Remove Node's label when there is a pod already running and managed by a DaemonSet**
 
 ```bash
 ❯ kubectl label nodes gke-k8s-training-default-pool-3088a1f5-1fz4 random-

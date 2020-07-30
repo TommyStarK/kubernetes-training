@@ -11,7 +11,7 @@ When a Job completes, no more Pods are created, but the Pods are not deleted eit
 
 ### demo
 
-- Create the job
+## 1. **Simple job**
 
 ```bash
 ❯ kubectl apply -f k8s/job/pi.yaml
@@ -38,7 +38,7 @@ NAME              COMPLETIONS   DURATION   AGE
 pi-with-timeout   1/1           12s        97s
 ```
 
-- Multi completion Job
+#### 2. **Multi completion Job**
 
 ```bash
 ❯ kubectl apply -f k8s/job/pi_multi_completion.yaml
@@ -52,7 +52,7 @@ multi-completion-pi-s2nbn   0/1     Completed   0          32s
 pi-with-timeout-d75qq       0/1     Completed   0          9m34s
 ```
 
-- Running Jobs in parallel
+#### 3. **Running Jobs in parallel**
 
 ```bash
 ❯ kubectl apply -f k8s/job/pi_parallelism.yaml

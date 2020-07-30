@@ -10,7 +10,7 @@ Instead of returning a single DNS A record, the DNS server will return multiple 
 
 ### demo
 
-- Create the headless service
+#### 1. **Create the headless service**
 
 First, we spawn 3 new pods instances of our app and the we create the headless service:
 
@@ -55,7 +55,7 @@ replica-set-dummy-node-app-sklkb   1/1     Running   0          117s   10.4.1.40
 replica-set-dummy-node-app-zhvmc   1/1     Running   0          117s   10.4.2.71   gke-k8s-training-default-pool-3088a1f5-rd72   <none>           <none>
 ```
 
-- Discovering pods through DNS
+#### 2. **Discovering pods through DNS**
 
 With your pods ready, you can now try performing a DNS lookup to see if you get the actual pod IPs or not. You’ll need to perform the lookup from inside one of the pods. 
 
@@ -82,7 +82,7 @@ Address: 10.4.2.71
 
 The DNS server returns two different IPs for the `headless-service-dummy-node-app.default.svc.cluster.local` FQDN. Those are the IPs of the 3 pods that are reporting being ready. You can confirm this by listing pods with `kubectl get pods -o wide`, which shows the pods’ IPs.
 
-- Troubleshooting services
+#### 3. **Troubleshooting services**
 
 When you’re unable to access your pods through the service, you should start by going through the following list:
 

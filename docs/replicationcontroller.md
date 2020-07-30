@@ -22,13 +22,13 @@ A ReplicationController has three essential parts:
 
 ### demo
 
-- Create a ReplicationController for the dummy node app
+Create a ReplicationController for the dummy node app
 
 ```bash
 ❯ kubectl apply -f k8s/replicationcontroller/dummy_node_app.yaml
 ```
 
-- Check running pods
+Check running pods:
 
 ```bash
 ❯ kubectl get pods

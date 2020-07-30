@@ -9,7 +9,7 @@ An abstract way to expose an application running on a set of Pods as a network s
 
 ### demo
 
-- Create a Service for the dummy node app
+#### 1. **Create a Service for the dummy node app**
 
 First we start by running our node app, using the ReplicaSet to spawn 3 pods:
 
@@ -64,7 +64,7 @@ spec:
   sessionAffinity: ClientIP
 ```
 
-- Discovering services
+#### 2. **Discovering services**
 
 :star: If you have a frontend pod that requires the use of a backend database server pod, you can expose the backend pod through a service called backend-database and then have the frontend pod look up its IP address and port through the environment variables BACKEND_DATABASE_SERVICE_HOST and BACKEND_DATABASE_SERVICE_PORT.
 
@@ -96,7 +96,7 @@ $ curl http://service-dummy-node-app
 
 :warning: Curl-ing the service works, but pinging it doesn’t. That’s because the service’s cluster IP is a virtual IP, and only has meaning when combined with the service port.
 
-- Manually configuring service endpoints
+#### 3. **Manually configuring service endpoints**
 
 If you create a service without a pod selector, Kubernetes won’t even create the Endpoints resource (after all, without a selector, it can’t know which pods to include in the service). It’s up to you to create the Endpoints resource to specify the list of endpoints for the service.
 
@@ -130,7 +130,7 @@ The Endpoints object needs to have the same name as the service and contain the 
 
 Containers created after the service is created will include the environment variables for the service, and all connections to its IP:port pair will be load balanced between the service’s endpoints.
 
-- Creating an alias for an external service
+#### 4. **Creating an alias for an external service**
 
 Instead of exposing an external service by manually configuring the service’s End- points, a simpler method allows you to refer to an external service by its fully qualified domain name (FQDN).
 
@@ -161,7 +161,7 @@ You have a few ways to make a service accessible externally:
 
 2. Setting the service type to LoadBalancer, an extension of the NodePort type. This makes the service accessible through a dedicated load balancer, provisioned from the cloud infrastructure Kubernetes is running on. The load balancer redirects traffic to the node port across all the nodes. Clients connect to the service through the load balancer’s IP.
 
-- NodePort
+#### 1. **NodePort**
 
 Create a Service of type `NodePort`
 
@@ -186,7 +186,7 @@ You have reached replica-set-dummy-node-app-tn5q6
 You have reached replica-set-dummy-node-app-jp277
 ```
 
-- Exposing a service through an external load balancer
+#### 2. **Exposing a service through an external load balancer**
 
 To create a service with a load balancer in front
 

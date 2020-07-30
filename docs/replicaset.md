@@ -18,13 +18,13 @@ If you specify multiple expressions, all those expressions must evaluate to true
 
 ### demo
 
-- Create a ReplicaSet for the dummy-node-app
+Create a ReplicaSet for the dummy-node-app
 
 ```bash
 ❯ kubectl apply -f k8s/replicaset/dummy_node_app.yaml
 ```
 
-- Display pods
+Display pods:
 
 ```bash
 ❯ kubectl get pods --show-labels

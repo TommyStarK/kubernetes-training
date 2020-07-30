@@ -13,7 +13,7 @@ An Ingress does not expose arbitrary ports or protocols. Exposing services other
 
 ### demo
 
-- local
+#### 1. **local**
 
 Start minikube with the ingress addon enabled
 
@@ -128,7 +128,7 @@ spec:
               servicePort: 80
 ```
 
-- Configuring Ingress to handle TLS traffic
+#### 2. **Configuring Ingress to handle TLS traffic**
 
 When a client opens a TLS connection to an Ingress controller, the controller terminates the TLS connection. The communication between the client and the controller is encrypted, whereas the communication between the controller and the backend pod isn’t.
 
@@ -210,7 +210,7 @@ You have reached replica-set-dummy-node-app-p87hg
 * Closing connection 0
 ```
 
-- Signaling when a pod is ready to accept connections
+#### 3. **Signaling when a pod is ready to accept connections**
 
 The pod may need time to load either configuration or data, or it may need to perform a warm-up procedure to prevent the first user request from taking too long and affecting the user experience. 
 

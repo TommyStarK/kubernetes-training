@@ -22,7 +22,7 @@ All pods in a Kubernetes cluster reside in a single flat, shared, network-addres
 
 ### demo
 
-- Create a pod from a yaml file
+#### 1. **Create a pod from a yaml file**
 
 ```bash
 ❯ kubectl apply -f k8s/pod/dummy_node_app.yaml
@@ -42,7 +42,7 @@ and communicate with it
 ❯ kubectl logs dummy-node-app-manual -c dummy-node-app
 ```
 
-- Create and manage a pod with labels
+#### 2. **Create and manage a pod with labels**
 
 ```bash
 ❯ kubectl apply -f k8s/pod/dummy_node_app_with_labels.yaml
@@ -76,7 +76,7 @@ NAME                    READY   STATUS    RESTARTS   AGE
 dummy-node-app-manual   1/1     Running   0          16m
 ```
 
-- Using labels for categorizing worker nodes and then schedule a pod to specific node
+#### 3. **Using labels for categorizing worker nodes and then schedule a pod to specific node**
 
 ```bash
 # list available nodes
@@ -102,7 +102,7 @@ NAME                           READY   STATUS    RESTARTS   AGE     IP          
 dummy-node-app-node-selector   1/1     Running   0          7m24s   10.4.1.15   gke-k8s-training-default-pool-3088a1f5-1fz4   <none>           <none>
 ```
 
-- Annotate pod
+#### 4. **Annotate pod**
 
 ```bash
 ❯ kubectl annotate pods dummy-node-app-node-selector test-annotation="this is a test annotation"

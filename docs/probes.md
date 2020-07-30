@@ -22,7 +22,7 @@ Kubernetes can probe a container using one of the three mechanisms:
 
 ### demo
 
-Start a pod with a HTTP Get liveness probe:
+#### **Start a pod with a HTTP Get liveness probe**
 
 ```bash
 ❯ kubectl apply -f k8s/probes/dummy_node_app.yaml
