@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: gce-persistent-disk-mongodb
+spec:
+  volumes:
+  - name: mongodb-data
+    gcePersistentDisk:
+      # must match the actual persistent disk name created
+      pdName: mongodb
+      fsType: ext4
+  containers:
+    - name: mongodb
+      image: mongo
+      ports:
+      - containerPort: 21017
+        protocol: TCP
+      volumeMounts:
+      - name: mongodb-data
+        # path were mongodb store its daata
+        mountPath: /data/db

@@ -110,4 +110,86 @@ You can now delete the pod, create your own git repository hosted on github, edi
 
 #### 3. **Accessing files on the worker node’s filesystem, the `hostPath` volume**
 
+A `hostPath` volume points to a specific file or directory on the node’s filesystem. Pods running on the same node and using the same path in their `hostPath` volume see the same files. Certain system-level pods (remember, these will usually be managed by a DaemonSet) do need to either read the node’s files or use the node’s filesystem to access the node’s devices through the filesystem.
+
+for example:
+
+- running a Container that needs access to Docker internals; use a `hostPath` of `/var/lib/docker`
+
+If a pod is deleted and the next pod uses a `hostPath` volume pointing to the same path on the host, the new pod will see whatever was left behind by the previous pod, but only if it’s scheduled to the same node as the first pod.
+
+:warning: If you’re thinking of using a `hostPath` volume as the place to store a database’s data directory, think again. Because the volume’s contents are stored on a specific node’s filesystem, when the database pod gets rescheduled to another node, it will no longer see the data.
+
+:star: Remember to use `hostPath` volumes only if you need to read or write system files on the node. Never use them to persist data across pods.
+
+
 #### 4. **Using persistent storage**
+
+- Using a GCE Persistent Disk in a pod volume
+
+You’ll start by creating the GCE persistent disk first. You need to create it in the same zone as your Kubernetes cluster.
+
+```bash
+❯ gcloud container clusters list
+NAME          LOCATION        MASTER_VERSION  MASTER_IP      MACHINE_TYPE  NODE_VERSION   NUM_NODES  STATUS
+k8s-training  europe-west1-b  1.15.12-gke.2   35.240.103.96  e2-micro      1.15.12-gke.2  2          RUNNING
+```
+
+This shows you’ve created your cluster in zone europe-west1-b, so you need to create the GCE persistent disk in the same zone as well.
+
+```bash
+❯ gcloud compute disks create --size=1GiB --zone=europe-west1-b mongodb
+```
+
+Now that you have your physical storage properly set up, you can use it in a volume inside your MongoDB pod
+
+```bash
+❯ kubectl apply -f k8s/volumes/pod/gce_persistent_disk_mongodb.yaml
+```
+
+Now that you’ve created the pod and the container has been started, you can run the MongoDB shell inside the container and use it to write some data to the data store.
+
+```bash
+# connect to the mongodb container and run the mongodb shell inside
+❯ kubectl exec -ti gce-persistent-disk-mongodb -c mongodb mongo
+
+# you are inside the mongdb container and using mongo shell
+> use mystore
+switched to db mystore
+> db.foo.insert({name:'foo'})
+WriteResult({ "nInserted" : 1 })
+> db.foo.find()
+{ "_id" : ObjectId("5f22bbc71a0f84f250d9a4ea"), "name" : "foo" }
+```
+
+Use `ctrl+c` to close the mongodb shell and then remove the pod:
+
+```bash
+❯ kubectl delete -f k8s/volumes/pod/gce_persistent_disk_mongodb.yaml
+```
+
+Wait until the pod is effectively removed and start a new one:
+
+```bash
+kubectl apply -f k8s/volumes/pod/gce_persistent_disk_mongodb.yaml
+
+# Connect again to the mongodb container to run the mongo shell inside
+❯ kubectl exec -ti gce-persistent-disk-mongodb -c mongodb mongo
+
+# print the databases available, you can see `mystore` is still here 
+> show dbs
+admin    0.000GB
+config   0.000GB
+local    0.000GB
+mystore  0.000GB
+# switch to it
+> use mystore
+switched to db mystore
+# and display collections, our `foo` collection is still here
+> show collections
+foo
+# and find documents inside the `foo` collection of the `mystore` database
+# you get the exact same result
+> db.foo.find()
+{ "_id" : ObjectId("5f22bbc71a0f84f250d9a4ea"), "name" : "foo" }
+```
