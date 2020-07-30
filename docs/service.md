@@ -151,7 +151,7 @@ spec:
   - port: 80
 ```
 
-:star: After the service is created, pods can connect to the external service through the `external-service.default.svc.cluster.local` domain name (or even external- service)
+:star: After the service is created, pods can connect to the external service through the `external-service.default.svc.cluster.local` domain name (or even external-service)
 
 ### Exposing services to external clients
 
