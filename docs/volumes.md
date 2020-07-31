@@ -2,7 +2,7 @@
 
 ## `Volumes`
 
-We’ve said that pods are similar to logical hosts where processes running inside them share resources such as CPU, RAM, network interfaces, and others. One would expect the processes to also share disks, but that’s not the case. You’ll remember that each container in a pod has its own isolated filesystem, because the filesystem comes from the container’s image.
+Pods are similar to logical hosts where processes running inside them share resources such as CPU, RAM, network interfaces, and others. One would expect the processes to also share disks, but that’s not the case. You’ll remember that each container in a pod has its own isolated filesystem, because the filesystem comes from the container’s image.
 
 Every new container starts off with the exact set of files that was added to the image at build time. Combine this with the fact that containers in a pod get restarted (either because the process died or because the liveness probe signaled to Kubernetes that the container wasn’t healthy anymore) and you’ll realize that the new container will not see anything that was written to the filesystem by the previous container, even though the newly started container runs in the same pod.
 
@@ -365,6 +365,124 @@ The `StorageClass` uses the Google Compute Engine (GCE) Persistent Disk (PD) pro
 
 **NOTE:** Similar to PersistentVolumes, StorageClass resources aren’t namespaced.
 
+Create the StorageClass
+
 ```bash
 ❯ kubectl apply -f k8s/volumes/storageclass/gce_persistent_disk.yaml
 ```
+
+Create a PersistentVolume definition requesting a specific StorageClass
+
+```bash
+❯ kubectl apply -f k8s/volumes/persistentvolumeclaims/mongodb_storage_class.yaml
+
+# The VOLUME column shows the PersistentVolume that’s bound to this claim
+❯ kubectl get persistentvolumeclaims
+NAME          STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS          AGE
+mongodb-pvc   Bound    pvc-0b46cbfb-2e31-4f5b-a2b1-697f1123a253   1Gi        RWO            gce-persistent-disk   3h38m
+
+# You can try listing PersistentVolumes now to see that a new PV has indeed been created automatically
+❯ kubectl get persistentvolumes
+NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS     CLAIM              STORAGECLASS          REASON   AGE
+gce-persistent-disk-mongodb-pv             1Gi        RWO,ROX        Retain           Released   default/mongodb-pvc                                  5h30m
+pvc-0b46cbfb-2e31-4f5b-a2b1-697f1123a253   1Gi        RWO            Delete           Bound      default/mongodb-pvc   gce-persistent-disk            3h39m
+```
+
+The cluster admin can create multiple storage classes with different performance or other characteristics. The developer then decides which one is most appropriate for each claim they create.
+
+The nice thing about `StorageClasses` is the fact that claims refer to them by name. The PVC definitions are therefore portable across different clusters, as long as the `StorageClass` names are the same across all of them.
+
+- **without specifying a StorageClass**
+
+The default storage class is what’s used to dynamically provision a `PersistentVolume` if the `PersistentVolumeClaim` doesn’t explicitly say which storage class to use.
+
+Before going deeper, we need to do some cleaning:
+
+```bash
+# delete the storage class
+❯ kubectl delete storageclasses gce-persistent-disk
+
+# delete the pvc and thus delete the dynamically provisioned
+# pv and persistent disk
+❯ kubectl delete persistentvolumeclaims gce-persistent-disk
+
+# delete the first pv we created
+❯ kubectl delete persistentvolume gce-persistent-disk-mongodb-pv
+
+# we should have something like this
+❯ gcloud compute disks list
+NAME                                         LOCATION        LOCATION_SCOPE  SIZE_GB  TYPE         STATUS
+gke-k8s-training-default-pool-3088a1f5-1fz4  europe-west1-b  zone            100      pd-standard  READY
+gke-k8s-training-default-pool-3088a1f5-rd72  europe-west1-b  zone            100      pd-standard  READY
+mongodb
+```
+
+You’re going to use kubectl get to see more info about the standard storage class in a GKE cluster:
+
+```bash
+❯ kubectl get storageclasses
+NAME                  PROVISIONER            AGE
+gce-persistent-disk   kubernetes.io/gce-pd   4h38m
+standard (default)    kubernetes.io/gce-pd   5d2h
+
+❯ kubectl get storageclasses standard -o yaml
+allowVolumeExpansion: true
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  annotations:
+    # This annotation marks the storage class as default.
+    storageclass.kubernetes.io/is-default-class: "true"
+  creationTimestamp: "2020-07-26T13:14:28Z"
+  labels:
+    addonmanager.kubernetes.io/mode: EnsureExists
+    kubernetes.io/cluster-service: "true"
+  name: standard
+  resourceVersion: "266"
+  selfLink: /apis/storage.k8s.io/v1/storageclasses/standard
+  uid: 5347f63c-a5d9-4d44-ad90-3815853ea8fb
+parameters:
+  # The type parameter is used by the provisioner to know what type of GCE PD to create.
+  type: pd-standard
+# The GCE Persistent Disk provisioner is used to provision PVs of this class.
+provisioner: kubernetes.io/gce-pd
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+```
+
+You can create a PVC without specifying the `storageClassName` attribute and (on Google Kubernetes Engine) a GCE Persistent Disk of type pd-standard will be provisioned for you:
+
+```bash
+❯ kubectl apply -f k8s/volumes/persistentvolumeclaims/mongodb_without_storage_class.yaml
+
+# the PVC is bound to a newly created volumee
+❯ kubectl get persistentvolumeclaims
+NAMESPACE   NAME                         STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+default     mongodb-pvc-nostorageclass   Bound    pvc-5b6b2532-d1b1-4230-8509-dbad5a13493f   1Gi        RWO            standard       9s
+
+# a new PV has been created of type pd-standard
+❯ kubectl get persistentvolume
+NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                                STORAGECLASS   REASON   AGE
+pvc-5b6b2532-d1b1-4230-8509-dbad5a13493f   1Gi        RWO            Delete           Bound    default/mongodb-pvc-nostorageclass   standard                10s
+
+# we can see it here
+❯ gcloud compute disks list
+NAME                                                             LOCATION        LOCATION_SCOPE  SIZE_GB  TYPE         STATUS
+gke-k8s-training-4dbad-pvc-5b6b2532-d1b1-4230-8509-dbad5a13493f  europe-west1-b  zone            1        pd-standard  READY
+gke-k8s-training-default-pool-3088a1f5-1fz4                      europe-west1-b  zone            100      pd-standard  READY
+gke-k8s-training-default-pool-3088a1f5-rd72                      europe-west1-b  zone            100      pd-standard  READY
+mongodb
+```
+
+Specifying an empty string as the storage class name ensures the PVC binds to a pre-provisioned PV instead of dynamically provisioning a new one.
+
+```yaml
+kind: PersistentVolumeClaim
+spec:
+  storageClassName: ""
+```
+
+:star: Explicitly set `storageClassName` to "" if you want the PVC to use a pre-provisioned PersistentVolume.
+
+To summarize, the best way to attach persistent storage to a pod is to only create the PVC (with an explicitly specified storage ClassName if necessary) and the pod (which refers to the PVC by name). Everything else is taken care of by the dynamic PersistentVolume provisioner.
+
