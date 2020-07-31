@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  # The name of your claim—you’ll need this later when using 
+  # the claim as the pod’s volume.
+  name: mongodb-pvc
+spec:
+  resources:
+    # Requesting 1 GiB of storage
+    requests:
+      storage: 1Gi
+  # You want the storage to support a single client (performing both reads and writes).
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: ""

@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: gce-persistent-disk-mongodb-pv
+spec:
+  capacity:
+    storage: 1Gi
+  # It can either be mounted by a single client for reading and writing 
+  # or by multiple clients for reading only.
+  accessModes:
+  - ReadWriteOnce
+  - ReadOnlyMany
+  # After the claim is released, the PersistentVolume should be 
+  # retained (not erased or deleted).
+  persistentVolumeReclaimPolicy: Retain
+  # The PersistentVolume is backed by the GCE Persistent Disk
+  gcePersistentDisk:
+    pdName: mongodb
+    fsType: ext4

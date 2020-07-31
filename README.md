@@ -13,7 +13,4 @@
 - [Service](https://github.com/TommyStarK/kubernetes-training/blob/master/docs/service.md)
 - [Ingress](https://github.com/TommyStarK/kubernetes-training/blob/master/docs/ingress.md)
 - [Using a headless service for discovering individual pods](https://github.com/TommyStarK/kubernetes-training/blob/master/docs/headless-service.md)
-- [Volumes](https://github.com/TommyStarK/kubernetes-training/blob/master/docs/volumes.md)
-- [PersistentVolumes](https://github.com/TommyStarK/kubernetes-training/blob/master/docs/persistentvolumes.md)
-- [PersistentVolumeClaims](https://github.com/TommyStarK/kubernetes-training/blob/master/docs/persistentvolumeclaims.md)
-- [StorageClass](https://github.com/TommyStarK/kubernetes-training/blob/master/docs/storageclass.md)
+- [Volumes, PersistentVolumes, PersistentVolumeClaims & Dynamic provisioning of PersistentVolumes](https://github.com/TommyStarK/kubernetes-training/blob/master/docs/volumes.md)
