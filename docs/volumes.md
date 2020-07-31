@@ -10,7 +10,7 @@ Kubernetes provides this by defining storage volumes. They aren’t top-level re
 
 After a container is restarted, the new container can see all the files that were written to the volume by the previous container. Also, if a pod contains multiple containers, the volume can be used by all of them at once.
 
-Kubernetes volumes are a component of a pod and are thus defined in the pod’s specification much like containers. They aren’t a standalone Kubernetes object and cannot be created or deleted on their own. A volume is available to all containers in the pod, but it must be mounted in each container that needs to access it. In each con- tainer, you can mount the volume in any location of its filesystem.
+Kubernetes volumes are a component of a pod and are thus defined in the pod’s specification much like containers. They aren’t a standalone Kubernetes object and cannot be created or deleted on their own. A volume is available to all containers in the pod, but it must be mounted in each container that needs to access it. In each container, you can mount the volume in any location of its filesystem.
 
 A wide variety of volume types is available. Several are generic, while others are specific to the actual storage technologies used underneath:
 
@@ -171,7 +171,7 @@ Use `ctrl+c` to close the mongodb shell and then remove the pod:
 Wait until the pod is effectively removed and start a new one:
 
 ```bash
-kubectl apply -f k8s/pod/gce_persistent_disk_mongodb.yaml
+❯ kubectl apply -f k8s/pod/gce_persistent_disk_mongodb.yaml
 
 # Connect again to the mongodb container to run the mongo shell inside
 ❯ kubectl exec -ti gce-persistent-disk-mongodb -c mongodb mongo
