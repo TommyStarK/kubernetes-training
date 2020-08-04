@@ -1,5 +1,6 @@
 # kubernetes-training
 
+- [cheatsheet](https://github.com/TommyStarK/kubernetes-training/blob/master/cheatsheet.md)
 - [kubectl config](https://github.com/TommyStarK/kubernetes-training/blob/master/docs/kubectl-config.md)
 - [cluster info](https://github.com/TommyStarK/kubernetes-training/blob/master/docs/cluster-info.md)
 - [Pod](https://github.com/TommyStarK/kubernetes-training/blob/master/docs/pod.md)
