@@ -240,3 +240,79 @@ You can roll back to a specific revision by specifying the revision in the undo 
 ❯ kubectl rollout undo deployment dummy-node-app-deployment --to-revision 1
 deployment.extensions/dummy-node-app-deployment rolled back
 ```
+
+#### 5. **Controlling the rate of the rollout**
+
+The way new pods are created and old ones are deleted is configurable through two additional properties of the rolling update strategy.
+
+Two properties affect how many pods are replaced at once during a Deployment’s rolling update. They are maxSurge and maxUnavailable and can be set as part of the rollingUpdate sub-property of the Deployment’s strategy attribute.
+
+```yaml
+spec:
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+```
+
+- `maxSurge`: Determines how many pod instances you allow to exist above the desired replica count configured on the Deployment. It defaults to 25%, so there can be at most 25% more pod instances than the desired count. If the desired replica count is set to four, there will never be more than five pod instances running at the same time during an update. When converting a percentage to an absolute number, the number is rounded up. Instead of a percentage, the value can also be an absolute value (for example, one or two additional pods can be allowed).
+
+- `maxUnavailable`: Determines how many pod instances can be unavailable relative to the desired replica count during the update. It also defaults to 25%, so the number of available pod instances must never fall below 75% of the desired replica count. Here, when converting a percentage to an absolute number, the number is rounded down. If the desired replica count is set to four and the percentage is 25%, only one pod can be unavailable. There will always be at least three pod instances available to serve requests during the whole rollout. As with maxSurge, you can also specify an absolute value instead of a percentage.
+
+:warning: It’s important to keep in mind that maxUnavailable is relative to the desired replica count. If the replica count is set to three and maxUnavailable is set to one, that means that the update process must always keep at least two (3 minus 1) pods available, while the number of pods that aren’t available can exceed one.
+
+#### 6. **Pausing, Resuming the rollout process**
+
+After triggering a rollout for a `Deployment` you can pause the process by doing the following:
+
+```bash
+❯ kubectl rollout pause deployment <DEPLOYMENT_NAME>
+```
+
+This way, you can effectively run a canary release. A canary release is a technique for minimizing the risk of rolling out a bad version of an application and it affecting all your users. Instead of rolling out the new version to everyone, you replace only one or a small number of old pods with new ones. This way only a small number of users will initially hit the new version.
+
+You can then verify whether the new version is working fine or not and then either continue the rollout across all remaining pods
+or roll back to the previous version.
+
+Once you’re confident the new version works as it should, you can resume the deployment to replace all the old pods with new ones:
+
+```bash
+❯ kubectl rollout resume deployment <DEPLOYMENT_NAME>
+```
+
+#### 7. **Blocking rollouts of bad versions**
+
+The `minReadySeconds` property specifies how long a newly created pod should be ready before the pod is treated as available. Until the pod is available, the rollout process will not continue. A pod is ready when readiness probes of all its containers return a success. If a new pod isn’t functioning properly and its readiness probe starts failing before `minReadySeconds` have passed, the rollout of the new version will effectively be blocked.
+
+Using `minReadySeconds` is like an airbag that saves your app from making a big mess after you’ve already let a buggy version slip into production.
+
+With a properly configured readiness probe and a proper `minReadySeconds` setting, Kubernetes would have prevented us from deploying the buggy v3 version earlier.
+
+Let's deploy the buggy v3 version of our app but with a readiness probe defined and a  `minReadySeconds` set to 10 seconds.
+
+```bash
+❯ kubectl apply -f k8s/deployment/dummy_node_app_v3_readiness_probe.yaml
+
+❯ kubectl rollout status deployment dummy-node-app-deployment
+Waiting for deployment "dummy-node-app-deployment" rollout to finish: 1 out of 3 new replicas have been updated...
+```
+
+You can run again the cURL loop in a different terminal to see that you never hit the pod running the v3.
+
+```bash
+❯ kubectl get pods
+NAME                                         READY   STATUS    RESTARTS   AGE
+dummy-node-app-deployment-6ccbfd6f89-k5w94   0/1     Running   0          5m51s
+dummy-node-app-deployment-7bb5b9db57-7czt7   1/1     Running   0          16m
+dummy-node-app-deployment-7bb5b9db57-qw8kb   1/1     Running   0          9m34s
+dummy-node-app-deployment-7bb5b9db57-xtncn   1/1     Running   0          10m
+```
+
+The pod is shown as not ready!
+
+As soon as your new pod starts, the readiness probe starts being hit every second. On the fifth request the readiness probe began failing, because your app starts returning HTTP status code 500 from the fifth request onward.
+
+As a result, the pod is removed as an endpoint from the service. By the time you start hitting the service in the curl loop, the pod has already been marked as not ready. This explains why you never hit the new pod with curl. And that’s exactly what you want, because you don’t want clients to hit a pod that’s not functioning properly.
+
+:star: If you only define the readiness probe without setting minReadySeconds properly, new pods are considered available immediately when the first invocation of the readiness probe succeeds. If the readiness probe starts failing shortly after, the bad version is rolled out across all pods. Therefore, you should set minReadySeconds appropriately.
