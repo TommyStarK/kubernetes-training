@@ -18,3 +18,4 @@
 - [PersistentVolumes, Claims, Dynamic provisioning, StorageClass](https://github.com/TommyStarK/kubernetes-training/blob/master/docs/persistentvolumes.md)
 - [ConfigMap](https://github.com/TommyStarK/kubernetes-training/blob/master/docs/configmap.md)
 - [Secret](https://github.com/TommyStarK/kubernetes-training/blob/master/docs/secret.md)
+- [Deployment](https://github.com/TommyStarK/kubernetes-training/blob/master/docs/deployment.md)
