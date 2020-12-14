@@ -1,5 +1,7 @@
 # kubernetes-training
 
+A training through the Kubernetes concepts, thanks to the **awesome** book `Kubernetes IN ACTION` by [Marko Lukša](https://github.com/luksa).
+
 - [cheatsheet](https://github.com/TommyStarK/kubernetes-training/blob/master/cheatsheet.md)
 - [kubectl config](https://github.com/TommyStarK/kubernetes-training/blob/master/docs/kubectl-config.md)
 - [cluster info](https://github.com/TommyStarK/kubernetes-training/blob/master/docs/cluster-info.md)
