@@ -1,6 +1,6 @@
 # kubernetes-training
 
-A training through the Kubernetes concept.
+A training through the Kubernetes concepts.
 
 - [cheatsheet](https://github.com/TommyStarK/kubernetes-training/blob/master/cheatsheet.md)
 - [kubectl config](https://github.com/TommyStarK/kubernetes-training/blob/master/docs/kubectl-config.md)
